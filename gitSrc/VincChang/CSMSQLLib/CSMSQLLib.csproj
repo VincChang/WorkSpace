@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <Version>8.0.1</Version>
+    <AssemblyVersion>8.0.1.0</AssemblyVersion>
+    <FileVersion>8.0.1.0</FileVersion>
+
+    <!-- NuGet 資訊 -->
+    <PackageId>Chang.CSMSQLLib</PackageId>
+    <Title>CSMSQLLib</Title>
+    <Authors>Y.H. Chang</Authors>
+    <Company>Chang's IDV</Company>
+    <Description>SQL Server helpers and extensions for .NET applications.</Description>
+    <PackageTags>sqlserver;sqlclient;database;helpers;utilities</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/VincChang/CSMSQLLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://changyh.idv.tw/</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+
+    <!-- 符號包（NuGet 可用） -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- 可選：降低公開 API 未寫註解的警告噪音 -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <!-- SqlClient：建議鎖在 5.x 稳定版；若未來要升版，改版本號即可 -->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- 若你有 icon.png，也可打包到 NuGet： -->
+    <!-- <None Include="icon.png" Pack="true" PackagePath="\" /> -->
+  </ItemGroup>
+
+</Project>

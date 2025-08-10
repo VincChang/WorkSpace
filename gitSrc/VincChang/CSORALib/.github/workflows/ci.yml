@@ -1,0 +1,36 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore CSORALib.sln
+
+      - name: Build (Release)
+        run: dotnet build CSORALib.sln --configuration Release --no-restore
+
+      # 如果有測試專案就打開
+      # - name: Test
+      #   run: dotnet test CSORALib.sln --configuration Release --no-build --verbosity normal
+
+      - name: Upload build artifacts (DLLs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: CSORALib-dlls
+          path: |
+            **/bin/Release/**/*.dll
+            !**/ref/**          # 避免 ref 強名稱僅介面用 DLL
+            !**/*Test*/**       # 排除測試輸出

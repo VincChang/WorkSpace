@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<Version>8.0.1</Version>
+		<AssemblyVersion>8.0.1.0</AssemblyVersion>
+		<FileVersion>8.0.1.0</FileVersion>
+
+		<!-- NuGet 資訊 -->
+		<PackageId>Chang.CSORALib</PackageId>
+		<Title>CSORALib</Title>
+		<Authors>Y.H. Chang</Authors>
+		<Company>Chang's IDV</Company>
+		<Description>Oracle Database helpers and extensions for .NET applications.</Description>
+		<PackageTags>oracle;odp.net;oracle-managed-data-access;database;helpers;utilities</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/VincChang/CSORALib</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageProjectUrl>https://changyh.idv.tw/</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<Deterministic>true</Deterministic>
+
+		<!-- 符號包，搭配 SourceLink -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+		<!-- 可選：先壓掉公開 API 沒加摘要註解的警告 -->
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<!-- 若有 icon.png 可一起打包到 NuGet：
+    <None Include="icon.png" Pack="true" PackagePath="\" />
+    -->
+	</ItemGroup>
+
+</Project>

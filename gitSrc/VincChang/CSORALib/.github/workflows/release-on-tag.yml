@@ -1,0 +1,54 @@
+﻿name: Build & Release on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'      # 例如 v1.0.0、v1.0.1
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore CSORALib.sln
+
+      - name: Build (Release)
+        run: dotnet build CSORALib.sln --configuration Release --no-restore
+
+      # 可選：打包 NuGet（若你想提供 .nupkg 一起下載）
+      - name: Pack NuGet
+        run: dotnet pack CSORALib.sln --configuration Release --no-build -o ./artifacts
+
+      - name: Collect DLLs
+        shell: bash
+        run: |
+          mkdir -p artifacts/dlls
+          shopt -s globstar
+          # 收集所有 Release DLL（排除 ref、test）
+          for f in **/bin/Release/**/*.dll; do
+            case "$f" in
+              *"/ref/"*|*"/test/"*|*"/Test/"*) continue;;
+            esac
+            cp "$f" artifacts/dlls/
+          done
+
+      - name: Create GitHub Release & Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/dlls/*.dll
+            artifacts/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 可選：自動發佈到 nuget.org（需要先在 Repo 設定 Secrets: NUGET_API_KEY）
+      # - name: Publish to nuget.org
+      #   if: success()
+      #   run: dotnet nuget push "artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
