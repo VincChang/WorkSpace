@@ -1,0 +1,67 @@
+name: Build & Release all packages on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'     # 例如 v8.0.1
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build (Release)
+        run: dotnet build --configuration Release --no-restore
+
+      # 由 tag 取版本（去掉前綴 v），對所有 .csproj 打包
+      - name: Pack all projects
+        shell: bash
+        run: |
+          set -e
+          VER="${GITHUB_REF_NAME#v}"
+          echo "Packing version $VER ..."
+          mkdir -p artifacts
+          # 列出所有 .csproj（排除測試與範例）
+          mapfile -t PROJS < <(git ls-files **/*.csproj | grep -Ev "(Test|Tests|Samples|Sample)")
+          for p in "${PROJS[@]}"; do
+            echo "Packing $p"
+            dotnet pack "$p" --configuration Release --no-build -o ./artifacts -p:PackageVersion="$VER"
+          done
+          ls -la artifacts
+
+      # 收集 DLL（方便 Release 附件下載）
+      - name: Collect DLLs
+        shell: bash
+        run: |
+          mkdir -p artifacts/dlls
+          shopt -s globstar
+          for f in **/bin/Release/**/*.dll; do
+            case "$f" in
+              *"/ref/"*|*"/test/"*|*"/Test/"*) continue;;
+            esac
+            cp "$f" artifacts/dlls/
+          done
+
+      - name: Create GitHub Release & Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
+            artifacts/dlls/*.dll
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 發佈到 nuget.org（先在 Repo -> Settings -> Secrets -> Actions 建立 NUGET_API_KEY）
+      - name: Publish all packages to nuget.org
+        run: dotnet nuget push "artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
