@@ -15,7 +15,7 @@
 		<Description>Common C# helpers and extensions for ASP.NET and system utilities.</Description>
 		<PackageTags>csharp;helpers;extensions;aspnetcore;utilities</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/VincChang/CSNetLib</RepositoryUrl>
+		<RepositoryUrl>https://github.com/VincChang/WorkSpace/tree/master/gitSrc/CSNetLib</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://changyh.idv.tw/</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
